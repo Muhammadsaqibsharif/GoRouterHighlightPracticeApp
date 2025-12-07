@@ -1,4 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+final GoRouter _router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) {
+        return const MyHomePage();
+      },
+    ),
+  ],
+);
 
 void main() {
   runApp(const MyApp());
@@ -9,13 +21,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Go Router Highlight Practice App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(),
+      routerConfig: _router,
     );
   }
 }
