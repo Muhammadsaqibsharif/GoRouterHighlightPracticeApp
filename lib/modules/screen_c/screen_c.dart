@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/app_theme.dart';
+
 class ScreenC extends StatefulWidget {
   const ScreenC({super.key});
 
@@ -72,39 +74,125 @@ class _ScreenCState extends State<ScreenC> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Screen C'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Phrase',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            _HashtagTextField(
-              controller: _phraseController,
-              hintText: 'Enter your phrase with #hashtags',
-              maxLines: 4,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Hashtags',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            _HashtagTextField(
-              controller: _hashtagsController,
-              hintText: 'Hashtags will appear here',
-              maxLines: 2,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(onPressed: _onSubmit, child: const Text('Submit')),
-          ],
+      appBar: AppBar(title: const Text('Screen C')),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppGradients.backgroundGradient,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: const BoxDecoration(
+                        gradient: AppGradients.primaryGradient,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.format_quote,
+                            color: AppColors.onPrimary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Phrase',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: AppColors.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: _HashtagTextField(
+                        controller: _phraseController,
+                        hintText: 'Enter your phrase with #hashtags',
+                        maxLines: 4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: const BoxDecoration(
+                        gradient: AppGradients.accentGradient,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.tag, color: AppColors.onPrimary),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Hashtags',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: AppColors.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: _HashtagTextField(
+                        controller: _hashtagsController,
+                        hintText: 'Hashtags will appear here',
+                        maxLines: 2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: AppGradients.darkGradient,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryDark.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                  ),
+                  onPressed: _onSubmit,
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.send_rounded),
+                      SizedBox(width: 8),
+                      Text('Submit'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
