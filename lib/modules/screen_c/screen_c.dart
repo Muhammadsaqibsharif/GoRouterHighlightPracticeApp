@@ -11,24 +11,51 @@ class ScreenC extends StatefulWidget {
 class _ScreenCState extends State<ScreenC> {
   final TextEditingController _phraseController = TextEditingController();
   final TextEditingController _hashtagsController = TextEditingController();
+  Set<String> _manuallyAddedHashtags = {};
+  Set<String> _lastExtractedHashtags = {};
 
   @override
   void initState() {
     super.initState();
     _phraseController.addListener(_onPhraseChanged);
+    _hashtagsController.addListener(_onHashtagsManuallyChanged);
   }
 
   @override
   void dispose() {
     _phraseController.removeListener(_onPhraseChanged);
+    _hashtagsController.removeListener(_onHashtagsManuallyChanged);
     _phraseController.dispose();
     _hashtagsController.dispose();
     super.dispose();
   }
 
   void _onPhraseChanged() {
-    final hashtags = _extractHashtags(_phraseController.text);
-    _hashtagsController.text = hashtags.join(' ');
+    final extractedHashtags = _extractHashtags(_phraseController.text).toSet();
+
+    final allHashtags = <String>{
+      ...extractedHashtags,
+      ..._manuallyAddedHashtags,
+    };
+
+    _manuallyAddedHashtags = _manuallyAddedHashtags.difference(
+      _lastExtractedHashtags.difference(extractedHashtags),
+    );
+
+    _lastExtractedHashtags = extractedHashtags;
+
+    final newHashtagsText = allHashtags.join(' ');
+    if (_hashtagsController.text != newHashtagsText) {
+      _hashtagsController.text = newHashtagsText;
+    }
+  }
+
+  void _onHashtagsManuallyChanged() {
+    final currentHashtags = _extractHashtags(_hashtagsController.text).toSet();
+    final extractedFromPhrase = _extractHashtags(
+      _phraseController.text,
+    ).toSet();
+    _manuallyAddedHashtags = currentHashtags.difference(extractedFromPhrase);
   }
 
   List<String> _extractHashtags(String text) {
@@ -118,34 +145,38 @@ class _HashtagTextFieldState extends State<_HashtagTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
+    final textStyle = const TextStyle(fontSize: 16, height: 1.5);
+
+    return TextField(
+      controller: widget.controller,
+      maxLines: widget.maxLines,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        hintText: widget.hintText,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Stack(
-        children: [
-          _buildHighlightedText(context),
-          TextField(
-            controller: widget.controller,
-            maxLines: widget.maxLines,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: widget.hintText,
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-            ),
-            style: const TextStyle(color: Colors.transparent),
-            cursorColor: Colors.black,
-          ),
-        ],
-      ),
+      style: textStyle,
+      buildCounter:
+          (
+            context, {
+            required currentLength,
+            required isFocused,
+            required maxLength,
+          }) => null,
     );
   }
+}
 
-  Widget _buildHighlightedText(BuildContext context) {
-    final text = widget.controller.text;
+class HashtagHighlightText extends StatelessWidget {
+  final String text;
+
+  const HashtagHighlightText({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
     if (text.isEmpty) {
       return const SizedBox.shrink();
     }
