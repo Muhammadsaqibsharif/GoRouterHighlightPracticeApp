@@ -1,16 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-final GoRouter _router = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return const MyHomePage();
-      },
-    ),
-  ],
-);
+import 'core/routes/routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      routerConfig: _router,
+      routerConfig: router,
     );
   }
 }
