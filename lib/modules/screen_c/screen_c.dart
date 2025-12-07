@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/widgets.dart';
 
 class ScreenC extends StatefulWidget {
   const ScreenC({super.key});
@@ -84,113 +85,39 @@ class _ScreenCState extends State<ScreenC> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Card(
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: const BoxDecoration(
-                        gradient: AppGradients.primaryGradient,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.format_quote,
-                            color: AppColors.onPrimary,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Phrase',
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
-                                  color: AppColors.onPrimary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: _HashtagTextField(
-                        controller: _phraseController,
-                        hintText: 'Enter your phrase with #hashtags',
-                        maxLines: 4,
-                        hashtagColor: AppColors.hashtagPhrase,
-                      ),
-                    ),
-                  ],
+              GradientCard(
+                title: 'Phrase',
+                icon: Icons.format_quote,
+                headerGradient: AppGradients.primaryGradient,
+                child: HashtagTextField(
+                  controller: _phraseController,
+                  hintText: 'Enter your phrase with #hashtags',
+                  maxLines: 4,
+                  hashtagColor: AppColors.hashtagPhrase,
                 ),
               ),
               const SizedBox(height: 16),
-              Card(
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: const BoxDecoration(
-                        gradient: AppGradients.accentGradient,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.tag, color: AppColors.onPrimary),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Hashtags',
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
-                                  color: AppColors.onPrimary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: _HashtagTextField(
-                        controller: _hashtagsController,
-                        hintText: 'Hashtags will appear here',
-                        maxLines: 2,
-                        hashtagColor: AppColors.hashtagField,
-                      ),
-                    ),
-                  ],
+              GradientCard(
+                title: 'Hashtags',
+                icon: Icons.tag,
+                headerGradient: AppGradients.accentGradient,
+                child: HashtagTextField(
+                  controller: _hashtagsController,
+                  hintText: 'Hashtags will appear here',
+                  maxLines: 2,
+                  hashtagColor: AppColors.hashtagField,
                 ),
               ),
               const SizedBox(height: 24),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: AppGradients.darkGradient,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryDark.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
+              GradientButton(
+                onPressed: _onSubmit,
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.send_rounded),
+                    SizedBox(width: 8),
+                    Text('Submit'),
                   ],
-                ),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                  ),
-                  onPressed: _onSubmit,
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.send_rounded),
-                      SizedBox(width: 8),
-                      Text('Submit'),
-                    ],
-                  ),
                 ),
               ),
             ],
@@ -198,202 +125,5 @@ class _ScreenCState extends State<ScreenC> {
         ),
       ),
     );
-  }
-}
-
-class _HashtagTextField extends StatefulWidget {
-  final TextEditingController controller;
-  final String hintText;
-  final int maxLines;
-  final Color hashtagColor;
-
-  const _HashtagTextField({
-    required this.controller,
-    required this.hintText,
-    required this.hashtagColor,
-    this.maxLines = 1,
-  });
-
-  @override
-  State<_HashtagTextField> createState() => _HashtagTextFieldState();
-}
-
-class _HashtagTextFieldState extends State<_HashtagTextField> {
-  late FocusNode _focusNode;
-  bool _isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = FocusNode();
-    _focusNode.addListener(_onFocusChanged);
-    widget.controller.addListener(_onTextChanged);
-  }
-
-  @override
-  void dispose() {
-    _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
-    widget.controller.removeListener(_onTextChanged);
-    super.dispose();
-  }
-
-  void _onFocusChanged() {
-    setState(() {
-      _isFocused = _focusNode.hasFocus;
-    });
-  }
-
-  void _onTextChanged() {
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final text = widget.controller.text;
-
-    return GestureDetector(
-      onTap: () {
-        _focusNode.requestFocus();
-      },
-      child: Container(
-        constraints: BoxConstraints(minHeight: widget.maxLines * 24.0 + 24),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: _isFocused ? AppColors.primary : AppColors.divider,
-            width: _isFocused ? 2 : 1,
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        child: Stack(
-          children: [
-            if (text.isEmpty)
-              Text(
-                widget.hintText,
-                style: TextStyle(
-                  fontSize: 16,
-                  height: 1.5,
-                  color: AppColors.textSecondary,
-                ),
-              )
-            else
-              _buildHighlightedText(),
-            EditableText(
-              controller: widget.controller,
-              focusNode: _focusNode,
-              style: const TextStyle(
-                fontSize: 16,
-                height: 1.5,
-                color: Colors.transparent,
-              ),
-              cursorColor: AppColors.textPrimary,
-              backgroundCursorColor: Colors.grey,
-              maxLines: widget.maxLines,
-              keyboardType: TextInputType.multiline,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHighlightedText() {
-    final text = widget.controller.text;
-    final RegExp hashtagRegex = RegExp(r'#\w+');
-    final List<TextSpan> spans = [];
-    int lastIndex = 0;
-
-    for (final match in hashtagRegex.allMatches(text)) {
-      if (match.start > lastIndex) {
-        spans.add(
-          TextSpan(
-            text: text.substring(lastIndex, match.start),
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 16,
-              height: 1.5,
-            ),
-          ),
-        );
-      }
-      spans.add(
-        TextSpan(
-          text: match.group(0),
-          style: TextStyle(
-            color: widget.hashtagColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            height: 1.5,
-          ),
-        ),
-      );
-      lastIndex = match.end;
-    }
-
-    if (lastIndex < text.length) {
-      spans.add(
-        TextSpan(
-          text: text.substring(lastIndex),
-          style: const TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 16,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-
-    return RichText(text: TextSpan(children: spans));
-  }
-}
-
-class HashtagHighlightText extends StatelessWidget {
-  final String text;
-
-  const HashtagHighlightText({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    if (text.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    final RegExp hashtagRegex = RegExp(r'#\w+');
-    final List<TextSpan> spans = [];
-    int lastIndex = 0;
-
-    for (final match in hashtagRegex.allMatches(text)) {
-      if (match.start > lastIndex) {
-        spans.add(
-          TextSpan(
-            text: text.substring(lastIndex, match.start),
-            style: const TextStyle(color: Colors.black),
-          ),
-        );
-      }
-      spans.add(
-        TextSpan(
-          text: match.group(0),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
-      lastIndex = match.end;
-    }
-
-    if (lastIndex < text.length) {
-      spans.add(
-        TextSpan(
-          text: text.substring(lastIndex),
-          style: const TextStyle(color: Colors.black),
-        ),
-      );
-    }
-
-    return RichText(text: TextSpan(children: spans));
   }
 }

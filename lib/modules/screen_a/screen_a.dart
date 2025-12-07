@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/gradient_icon_box.dart';
 
 class ScreenA extends StatelessWidget {
   const ScreenA({super.key});
@@ -18,24 +19,9 @@ class ScreenA extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: AppGradients.primaryGradient,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.home_rounded,
-                  size: 64,
-                  color: AppColors.onPrimary,
-                ),
+              const GradientIconBox(
+                icon: Icons.home_rounded,
+                gradient: AppGradients.primaryGradient,
               ),
               const SizedBox(height: 32),
               Text(
