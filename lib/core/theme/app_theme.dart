@@ -18,6 +18,8 @@ class AppColors {
   static const Color textSecondary = Color(0xFF757575);
   static const Color divider = Color(0xFFBDBDBD);
   static const Color cardShadow = Color(0x1A000000);
+  static const Color hashtagPhrase = Color(0xFF1976D2);
+  static const Color hashtagField = Color(0xFFE91E63);
 }
 
 class AppGradients {

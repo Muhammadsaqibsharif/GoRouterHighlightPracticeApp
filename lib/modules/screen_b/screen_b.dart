@@ -57,7 +57,11 @@ class ScreenB extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: _buildHighlightedText(phrase!, context),
+                        child: _buildHighlightedText(
+                          phrase!,
+                          context,
+                          AppColors.hashtagPhrase,
+                        ),
                       ),
                     ],
                   ),
@@ -91,7 +95,11 @@ class ScreenB extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: _buildHighlightedText(hashtags ?? '', context),
+                        child: _buildHighlightedText(
+                          hashtags ?? '',
+                          context,
+                          AppColors.hashtagField,
+                        ),
                       ),
                     ],
                   ),
@@ -222,7 +230,11 @@ class ScreenB extends StatelessWidget {
     );
   }
 
-  Widget _buildHighlightedText(String text, BuildContext context) {
+  Widget _buildHighlightedText(
+    String text,
+    BuildContext context,
+    Color hashtagColor,
+  ) {
     final RegExp hashtagRegex = RegExp(r'#\w+');
     final List<TextSpan> spans = [];
     int lastIndex = 0;
@@ -239,10 +251,7 @@ class ScreenB extends StatelessWidget {
       spans.add(
         TextSpan(
           text: match.group(0),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: hashtagColor, fontWeight: FontWeight.bold),
         ),
       );
       lastIndex = match.end;
