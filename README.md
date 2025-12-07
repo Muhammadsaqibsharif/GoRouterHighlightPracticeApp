@@ -2,6 +2,11 @@
 
 A new Flutter project.
 
+## Project Build on
+
+- **Flutter**: 3.32.8
+- **Dart**: 3.8.1
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
